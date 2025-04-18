@@ -1,3 +1,23 @@
+
+"""
+python test/local_deepseek_agent.py
+
+
+
+
+POST https://api.deepseek.com/v1/agents/create
+Content-Type: application/json
+Authorization: Bearer sk-96e2096fd7d54063844bdfbdd022c1ff
+
+{
+  "model": "deepseek-agent-v1",
+  "messages": [
+    {"role": "user", "content": "帮我分析今天的股票数据"},
+    {"role": "assistant", "content": "已连接到金融数据库，请指定股票代码。"}
+  ],
+  "tools": ["stock_api", "data_visualization"]
+}
+"""
 from langchain.llms.base import LLM
 from typing import Optional, List, Mapping, Any
 import requests
