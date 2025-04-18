@@ -3,20 +3,21 @@
 @Date: 2023-12-01 23:14:14
 @Description: 直接把完整的场景信息给 LLM
 @ Scenario-1
--> python llm.py --env_name '3way' --phase_num 3
--> python llm.py --env_name '4way' --phase_num 4
+-> python llm_qwen.py --env_name '3way' --phase_num 3
+-> python llm_qwen.py --env_name '4way' --phase_num 4
 @ Scenario-2, Blocked
--> python llm.py --env_name '3way' --phase_num 3 --edge_block 'E1'
--> python llm.py --env_name '4way' --phase_num 4 --edge_block 'E1'
+-> python llm_qwen.py --env_name '3way' --phase_num 3 --edge_block 'E1'
+-> python llm_qwen.py --env_name '4way' --phase_num 4 --edge_block 'E1'
 @ Scenario-3, Detector Break
--> python llm.py --env_name '3way' --phase_num 3 --detector_break 'E0--s'
--> python llm.py --env_name '4way' --phase_num 4 --detector_break 'E2--s'
+-> python llm_qwen.py --env_name '3way' --phase_num 3 --detector_break 'E0--s'
+-> python llm_qwen.py --env_name '4way' --phase_num 4 --detector_break 'E2--s'
 @LastEditTime: 2024-01-16 16:51:46
 '''
-import argparse
+import os, argparse
 import langchain
 from loguru import logger
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
+# from langchain.chat_models import ChatOpenAI
 
 from tshub.utils.get_abs_path import get_abs_path
 from tshub.utils.init_log import set_logger
@@ -27,7 +28,8 @@ from utils.readConfig import read_config
 
 langchain.debug = False # 开启详细的显示
 path_convert = get_abs_path(__file__)
-set_logger(path_convert('./'))
+set_logger(path_convert('./log'))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -44,15 +46,25 @@ if __name__ == '__main__':
 
     # Init LLM Model
     config = read_config()
-    openai_proxy = config['OPENAI_PROXY']
-    openai_api_key = config['OPENAI_API_KEY']
-    openai_api_base = config['OPENAI_API_BASE']
+    # openai_proxy = config['OPENAI_PROXY']
+    # openai_api_key = config['OPENAI_API_KEY']
+    # openai_api_base = config['OPENAI_API_BASE']
+    # chat = ChatOpenAI(
+    #     model=config['OPENAI_API_MODEL'], 
+    #     temperature=0.0,
+    #     openai_api_key=openai_api_key, 
+    #     openai_proxy=openai_proxy,
+    #     openai_api_base=openai_api_base,
+    # )
+
+    # Configure ChatOpenAI to use Qwen2.5
+    # openai_proxy = config['OPENAI_PROXY']
+    qwen_api_key = config['QWEN_API_KEY']
+    qwen_api_base = config['QWEN_API_BASE']
     chat = ChatOpenAI(
-        model=config['OPENAI_API_MODEL'], 
-        temperature=0.0,
-        openai_api_key=openai_api_key, 
-        openai_proxy=openai_proxy,
-        openai_api_base=openai_api_base,
+        model="qwen-plus", 
+        openai_api_key=qwen_api_key, 
+        openai_api_base=qwen_api_base,  
     )
 
     # Init Scenario
@@ -100,7 +112,12 @@ if __name__ == '__main__':
                 
         states, rewards, truncated, dones, infos = tsc_wrapper.step(action=action)
         tsc_message = tsc_wrapper.description_env() # 描述环境
+        print('-----------------------------------')
+        print(tsc_message)
+        print(config['OPENAI_API_MODEL'])
         llm_decision = chat(tsc_message) # chat 作出决策
+        print(f'SIM: {llm_decision.content}')
+        print('-----------------------------------')
         logger.info(f'SIM: {llm_decision.content}')
         final_action = tsc_wrapper.output_parser.parse(llm_decision.content)
         try:
