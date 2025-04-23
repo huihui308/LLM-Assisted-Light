@@ -55,15 +55,25 @@ if __name__ == '__main__':
 
     # Init Chat
     config = read_config()
-    openai_proxy = config['OPENAI_PROXY']
-    openai_api_key = config['OPENAI_API_KEY']
-    openai_api_base = config['OPENAI_API_BASE']
+    # openai_proxy = config['OPENAI_PROXY']
+    # openai_api_key = config['OPENAI_API_KEY']
+    # openai_api_base = config['OPENAI_API_BASE']
+    # chat = ChatOpenAI(
+    #     model=config['OPENAI_API_MODEL'], 
+    #     temperature=0.0,
+    #     openai_api_key=openai_api_key, 
+    #     openai_proxy=openai_proxy,
+    #     openai_api_base=openai_api_base,
+    # )
+
+    # Configure ChatOpenAI to use Qwen2.5
+    # openai_proxy = config['OPENAI_PROXY']
+    qwen_api_key = config['QWEN_API_KEY']
+    qwen_api_base = config['QWEN_API_BASE']
     chat = ChatOpenAI(
-        model=config['OPENAI_API_MODEL'], 
-        temperature=0.0,
-        openai_api_key=openai_api_key, 
-        openai_proxy=openai_proxy,
-        openai_api_base=openai_api_base,
+        model="qwen-plus", 
+        openai_api_key=qwen_api_key, 
+        openai_api_base=qwen_api_base,  
     )
 
     # Init scenario
@@ -71,7 +81,7 @@ if __name__ == '__main__':
     sumo_cfg = path_convert(f"./TSCScenario/{env_name}/env/{route_type}.sumocfg")
     net_file = path_convert(f"./TSCScenario/{env_name}/env/{env_name}.net.xml")
     log_path = path_convert(f'./log')
-    trip_info = path_convert(f'./{env_name}_LLM.tripinfo.xml')
+    trip_info = path_convert(f'./log/{env_name}_LLM.tripinfo.xml')
 
     tsc_scenario = TSCEnvironment(
         sumo_cfg=sumo_cfg, 
@@ -90,7 +100,6 @@ if __name__ == '__main__':
     )
 
     # Init Agent
-    print("-------------------------------   0")
     o_parse = OutputParse(env=None, llm=chat)
     tools = [
         GetIntersectionLayout(env=tsc_wrapper),
@@ -102,9 +111,7 @@ if __name__ == '__main__':
         GetJunctionSituation(env=tsc_wrapper),
     ]
     print(tools)
-    print("-------------------------------   1")
     tsc_agent = TSCAgent(env=tsc_wrapper, llm=chat, tools=tools, verbose=True)
-    print("-------------------------------   2")
 
     # Start Simulation
     dones = False
