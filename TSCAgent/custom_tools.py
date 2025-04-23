@@ -50,7 +50,7 @@ class GetCurrentOccupancy:
              description="""Useful when you want to get the congestion situation of each traffic movement at the **current** moment. The input to this tool should be a string, `junction_id`.""")
     def inference(self, *arg, **kwargs) -> str:
         current_occupancy = self.env.get_current_occupancy()
-        current_occupancy_string = f"""Now you get the current occupancy for this intersection. At the current moment {self.env.tsc_env.sim_step}, the congestion situation of each movement is:\n{dict_to_str(current_occupancy)}
+        current_occupancy_string = f"""Now you get the current occupancy for this intersection. At the current moment {self.env.env.tsc_env.sim_step}, the congestion situation of each movement is:\n{dict_to_str(current_occupancy)}
         \n,where `key` is the `movement id`, and `value` represents the proportion of the queue length on this `traffic movement` to the total length. Based on the information you have obtained so far, the structure of the intersection, the structure of the traffic phase, and the occupancy of each movement, please select an appropriate action from the available actions and give an explanation.
         """
         return current_occupancy_string

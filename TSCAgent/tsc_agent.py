@@ -8,8 +8,8 @@ from typing import List
 from loguru import logger
 
 from langchain.chat_models import ChatOpenAI
-from langchain.agents import initialize_agent, AgentType
-from langchain.agents.tools import Tool
+from langchain.agents import initialize_agent, AgentType, Tool
+# from langchain.agents.tools import Tool
 from langchain.memory import ConversationSummaryMemory
 from tshub.utils.get_abs_path import get_abs_path
 from TSCAgent.callback_handler import create_file_callback
@@ -40,6 +40,7 @@ class TSCAgent:
         self.tools = [] # agent 可以使用的 tools
         for ins in tools:
             func = getattr(ins, 'inference')
+            # print(func.name)
             self.tools.append(
                 Tool(name=func.name, description=func.description, func=func)
             )
@@ -74,9 +75,11 @@ class TSCAgent:
             last_step_action=last_step_action,
             last_step_explanation=last_step_explanation
         )
+        # print(custom_message)
+        # print(type(custom_message), len(custom_message))
         # 找出接近的场景, 动作和解释
         llm_response = self.agent.run(
-            custom_message,
+            custom_message[0].content,
             callbacks=[self.file_callback]
         )
         self.memory.clear()
