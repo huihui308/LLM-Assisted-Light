@@ -71,8 +71,8 @@ if __name__ == '__main__':
     route_type = 'vehicle' # vehicle_pedestrian
     sumo_cfg = path_convert(f"./TSCScenario/{env_name}/env/{route_type}.sumocfg")
     net_file = path_convert(f"./TSCScenario/{env_name}/env/{env_name}.net.xml")
-    log_path = path_convert(f'./')
-    trip_info = path_convert(f'./{env_name}_LLM.tripinfo.xml')
+    log_path = path_convert(f'./log')
+    trip_info = path_convert(f'./log/{env_name}_LLM.tripinfo.xml')
 
     tsc_scenario = TSCEnvironment(
         sumo_cfg=sumo_cfg, 
