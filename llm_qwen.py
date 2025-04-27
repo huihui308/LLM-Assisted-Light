@@ -61,8 +61,10 @@ if __name__ == '__main__':
     # openai_proxy = config['OPENAI_PROXY']
     qwen_api_key = config['QWEN_API_KEY']
     qwen_api_base = config['QWEN_API_BASE']
+    qwen_api_model = config['QWEN_API_MODEL']
+    # print(config['OPENAI_API_MODEL'])
     chat = ChatOpenAI(
-        model="qwen-plus", 
+        model=qwen_api_model, 
         openai_api_key=qwen_api_key, 
         openai_api_base=qwen_api_base,  
     )
@@ -112,12 +114,11 @@ if __name__ == '__main__':
                 
         states, rewards, truncated, dones, infos = tsc_wrapper.step(action=action)
         tsc_message = tsc_wrapper.description_env() # 描述环境
-        print('-----------------------------------')
-        print(tsc_message)
-        print(config['OPENAI_API_MODEL'])
+        # print('-----------------------------------')
+        # print(tsc_message)
         llm_decision = chat(tsc_message) # chat 作出决策
-        print(f'SIM: {llm_decision.content}')
-        print('-----------------------------------')
+        # print(f'SIM: {llm_decision.content}')
+        # print('-----------------------------------')
         logger.info(f'SIM: {llm_decision.content}')
         final_action = tsc_wrapper.output_parser.parse(llm_decision.content)
         try:
