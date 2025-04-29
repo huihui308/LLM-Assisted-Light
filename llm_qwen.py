@@ -46,25 +46,13 @@ if __name__ == '__main__':
 
     # Init LLM Model
     config = read_config()
-    # openai_proxy = config['OPENAI_PROXY']
-    # openai_api_key = config['OPENAI_API_KEY']
-    # openai_api_base = config['OPENAI_API_BASE']
-    # chat = ChatOpenAI(
-    #     model=config['OPENAI_API_MODEL'], 
-    #     temperature=0.0,
-    #     openai_api_key=openai_api_key, 
-    #     openai_proxy=openai_proxy,
-    #     openai_api_base=openai_api_base,
-    # )
-
     # Configure ChatOpenAI to use Qwen2.5
-    # openai_proxy = config['OPENAI_PROXY']
     qwen_api_key = config['QWEN_API_KEY']
     qwen_api_base = config['QWEN_API_BASE']
     qwen_api_model = config['QWEN_API_MODEL']
     # print(config['OPENAI_API_MODEL'])
     chat = ChatOpenAI(
-        model=qwen_api_model, 
+        model=qwen_api_model,           # "qwen-plus"
         openai_api_key=qwen_api_key, 
         openai_api_base=qwen_api_base,  
     )
@@ -91,7 +79,7 @@ if __name__ == '__main__':
         tls_id='J1',
         phase_num=phase_num
     )
-    
+
     # Simulate with ENV
     dones = False
     tsc_wrapper.reset()

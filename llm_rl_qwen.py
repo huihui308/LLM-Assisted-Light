@@ -37,7 +37,7 @@ from utils.readConfig import read_config
 
 langchain.debug = False # 开启详细的显示
 path_convert = get_abs_path(__file__)
-set_logger(path_convert('./'))
+set_logger(path_convert('./log'))
 
 if __name__ == '__main__':
     # Init Parser
@@ -55,23 +55,12 @@ if __name__ == '__main__':
 
     # Init Chat
     config = read_config()
-    # openai_proxy = config['OPENAI_PROXY']
-    # openai_api_key = config['OPENAI_API_KEY']
-    # openai_api_base = config['OPENAI_API_BASE']
-    # chat = ChatOpenAI(
-    #     model=config['OPENAI_API_MODEL'], 
-    #     temperature=0.0,
-    #     openai_api_key=openai_api_key, 
-    #     openai_proxy=openai_proxy,
-    #     openai_api_base=openai_api_base,
-    # )
-
-    # Configure ChatOpenAI to use Qwen2.5
-    # openai_proxy = config['OPENAI_PROXY']
+    # Configure ChatOpenAI to use model-->"qwen-plus"
     qwen_api_key = config['QWEN_API_KEY']
     qwen_api_base = config['QWEN_API_BASE']
+    qwen_api_model = config['QWEN_API_MODEL']
     chat = ChatOpenAI(
-        model="qwen-plus", 
+        model=qwen_api_model,       # "qwen-plus"
         openai_api_key=qwen_api_key, 
         openai_api_base=qwen_api_base,  
     )
